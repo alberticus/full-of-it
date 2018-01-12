@@ -12,6 +12,7 @@ void test_delete_this_later(char array[10][4][4])
 
 int		main(int argc, char **argv)
 {
+	char alphabet[26]
 	char *input;
 	char **OneDPieces;
 	char *grid;
@@ -25,6 +26,8 @@ int		main(int argc, char **argv)
 	int y;
 
 	index = 0;
+	alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	piecesplaced = 0;
 	piecesindex = 0;
 	dimension = 2;
 	input = fileRead(argv[1]);
@@ -48,30 +51,37 @@ int		main(int argc, char **argv)
 		move_to_corner(shapearray[index]);
 		index++;
 	}
+	index = 0;
 	grid = (char*)malloc(sizeof(char) * dimension * dimension);
-	spotify(grid); // function not written yet. fill empty grid with dots.
+	spotify(grid);
 	while (piecesplaced < piececount)
 	{
-		if (can_place(x, y, grid, shapearray[index]))
+		if (can_place(x, y, grid, shapearray[piecesplaced]))
 		{
-			place_piece(shapearray[index], grid, x, y);
-			index++;
+			place_piece(shapearray[piecesplaced], grid, x, y);
 			piecesplaced++;
-		}
-			x++;
-		if (x == dimension && y < dimension)
-		{
-			y++;
 			x = 0;
+			y = 0;
+			index++;
+		}
+		if (x == dimension)
+		{
+			x = 0;
+			y++;
 		}
 		if (y == dimension)
 		{
-			y = 0;
-			dimension++;
-			free (grid);
-			grid = (char*)malloc(sizeof(char) * dimension * dimension);
-			spotify(grid);
-			x = 0;
+			undo(grid, alphabet[index], dimension);
+			piecesplaced--;
 		}
+		if (piecesplaced == 0)
+		{
+			free(grid);
+			dimension++;
+			grid = (char*)malloc(sizeof(char) * dimension * dimension);
+		}
+		x++;
 	}
+	return (0);
+}
 }
